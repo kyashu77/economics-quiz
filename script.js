@@ -254,7 +254,9 @@ let quizEndTime = null;
 let reviewIndex = 0;
 
 const TIMER_DURATION = 60;
-const CIRCUMFERENCE = 2 * Math.PI * 34; // r=34
+const TIMER_RADIUS = 34; // matches SVG circle r attribute
+const CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS;
+const SCORE_RING_RADIUS = 68; // matches SVG score circle r attribute
 
 // ===== DOM HELPERS =====
 const $ = id => document.getElementById(id);
@@ -464,9 +466,9 @@ function renderResults() {
   $('stat-time').textContent = formatTime(totalTimeSec);
   $('stat-pct').textContent = pct + '%';
 
-  // Animate score ring
+  // Animate score ring (circumference = 2 * π * SCORE_RING_RADIUS ≈ 427.2)
   const scoreRing = $('score-ring');
-  const scoreCircumference = 2 * Math.PI * 68;
+  const scoreCircumference = 2 * Math.PI * SCORE_RING_RADIUS;
   const scoreOffset = scoreCircumference * (1 - correct / 30);
   setTimeout(() => {
     scoreRing.style.strokeDashoffset = scoreOffset;
