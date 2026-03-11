@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPSC Economics Quiz 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== Start Screen ===== -->
+  <div id="start-screen" class="screen active">
+    <div class="start-container">
+      <div class="emblem">🏛️</div>
+      <h1>UPSC Economics Quiz 2025</h1>
+      <p class="subtitle">CSE Prelims — Indian Economy &amp; Current Affairs</p>
+      <div class="info-cards">
+        <div class="info-card"><span class="info-num">30</span><span class="info-label">Questions</span></div>
+        <div class="info-card"><span class="info-num">60s</span><span class="info-label">Per Question</span></div>
+        <div class="info-card"><span class="info-num">30</span><span class="info-label">Max Score</span></div>
+        <div class="info-card"><span class="info-num">30 min</span><span class="info-label">Total Time</span></div>
+      </div>
+      <div class="topics-box">
+        <h3>Topics Covered</h3>
+        <div class="topic-tags">
+          <span class="tag tag-survey">Economic Survey 2025-26</span>
+          <span class="tag tag-industry">Indian Industry</span>
+          <span class="tag tag-service">Service Sector</span>
+          <span class="tag tag-infra">Infrastructure</span>
+          <span class="tag tag-insurance">Insurance Sector</span>
+          <span class="tag tag-current">Current Affairs</span>
+        </div>
+      </div>
+      <div class="instructions">
+        <h3>Instructions</h3>
+        <ul>
+          <li>Each question has a 60-second countdown timer</li>
+          <li>Timer auto-advances if no answer is selected</li>
+          <li>Immediate feedback with explanation after each answer</li>
+          <li>Navigate between questions using the panel below</li>
+          <li>Review all answers at the end</li>
+        </ul>
+      </div>
+      <button id="start-btn" class="btn-primary">🚀 Start Quiz</button>
+    </div>
+  </div>
+
+  <!-- ===== Quiz Screen ===== -->
+  <div id="quiz-screen" class="screen">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <div class="question-meta">
+          <span id="question-number" class="q-num">Q 1 / 30</span>
+          <span id="topic-badge" class="tag">Topic</span>
+        </div>
+        <div class="timer-wrap">
+          <svg id="timer-svg" viewBox="0 0 80 80" width="80" height="80">
+            <circle cx="40" cy="40" r="34" class="timer-bg"/>
+            <circle id="timer-circle" cx="40" cy="40" r="34" class="timer-ring"/>
+          </svg>
+          <span id="timer-text" class="timer-text">60</span>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div id="progress-bar" class="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="question-card">
+        <p id="question-text" class="question-text"></p>
+      </div>
+      <div id="options-container" class="options-container"></div>
+      <div id="explanation-box" class="explanation-box hidden"></div>
+      <button id="next-btn" class="btn-primary hidden">Next →</button>
+      <div class="nav-panel">
+        <div id="nav-grid" class="nav-grid"></div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot dot-current"></span>Current</span>
+          <span class="legend-item"><span class="legend-dot dot-correct"></span>Correct</span>
+          <span class="legend-item"><span class="legend-dot dot-wrong"></span>Wrong</span>
+          <span class="legend-item"><span class="legend-dot dot-unanswered"></span>Unanswered</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Results Screen ===== -->
+  <div id="results-screen" class="screen">
+    <div class="results-container">
+      <h2>Quiz Completed!</h2>
+      <div class="score-circle-wrap">
+        <svg viewBox="0 0 160 160" width="160" height="160">
+          <circle cx="80" cy="80" r="68" class="score-bg"/>
+          <circle id="score-ring" cx="80" cy="80" r="68" class="score-ring"/>
+        </svg>
+        <div class="score-text">
+          <span id="score-value">0</span>
+          <span class="score-denom">/ 30</span>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card correct-card"><span id="stat-correct">0</span><span>Correct</span></div>
+        <div class="stat-card wrong-card"><span id="stat-wrong">0</span><span>Wrong</span></div>
+        <div class="stat-card skipped-card"><span id="stat-skipped">0</span><span>Skipped</span></div>
+        <div class="stat-card time-card"><span id="stat-time">0s</span><span>Time Taken</span></div>
+        <div class="stat-card pct-card"><span id="stat-pct">0%</span><span>Score %</span></div>
+      </div>
+      <div class="topic-breakdown">
+        <h3>Topic-wise Breakdown</h3>
+        <div id="topic-table"></div>
+      </div>
+      <div class="results-actions">
+        <button id="review-btn" class="btn-secondary">🔍 Review Answers</button>
+        <button id="restart-btn" class="btn-primary">🔄 Restart Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Review Screen ===== -->
+  <div id="review-screen" class="screen">
+    <div class="review-container">
+      <div class="review-header">
+        <button id="back-to-results" class="btn-ghost">← Back to Results</button>
+        <span id="review-counter" class="review-counter">1 / 30</span>
+      </div>
+      <div class="question-meta">
+        <span id="review-topic-badge" class="tag">Topic</span>
+      </div>
+      <div class="question-card">
+        <p id="review-question-text" class="question-text"></p>
+      </div>
+      <div id="review-options-container" class="options-container"></div>
+      <div id="review-explanation-box" class="explanation-box show-explanation"></div>
+      <div class="review-nav">
+        <button id="review-prev" class="btn-ghost">← Previous</button>
+        <button id="review-next" class="btn-ghost">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
