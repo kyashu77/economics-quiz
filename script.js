@@ -246,17 +246,19 @@ const questions = [
 
 // ===== STATE =====
 let currentQ = 0;
-let answers = new Array(30).fill(null); // null=unanswered, {selected, correct, skipped}
+let answers = new Array(TOTAL_QUESTIONS).fill(null); // null=unanswered, {selected, correct, skipped}
 let timerInterval = null;
 let timeLeft = 60;
 let quizStartTime = null;
 let quizEndTime = null;
 let reviewIndex = 0;
 
+const TOTAL_QUESTIONS = questions.length;
 const TIMER_DURATION = 60;
-const TIMER_RADIUS = 34; // matches SVG circle r attribute
+const TIMER_RADIUS = 34; // matches SVG circle r="34" in index.html
 const CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS;
-const SCORE_RING_RADIUS = 68; // matches SVG score circle r attribute
+const SCORE_RING_RADIUS = 68; // matches SVG score circle r="68" in index.html
+const OPTION_LETTERS = ['a', 'b', 'c', 'd'];
 
 // ===== DOM HELPERS =====
 const $ = id => document.getElementById(id);
@@ -273,7 +275,7 @@ $('start-btn').addEventListener('click', startQuiz);
 
 function startQuiz() {
   currentQ = 0;
-  answers = new Array(30).fill(null);
+  answers = new Array(TOTAL_QUESTIONS).fill(null);
   quizStartTime = Date.now();
   showScreen('quiz-screen');
   loadQuestion(0);
@@ -285,13 +287,13 @@ function loadQuestion(idx) {
   currentQ = idx;
 
   // Header
-  $('question-number').textContent = `Q ${idx + 1} / 30`;
+  $('question-number').textContent = `Q ${idx + 1} / ${TOTAL_QUESTIONS}`;
   const badge = $('topic-badge');
   badge.textContent = q.topic;
   badge.className = 'tag ' + q.tag_class;
 
   // Progress bar
-  $('progress-bar').style.width = ((idx / 30) * 100) + '%';
+  $('progress-bar').style.width = ((idx / TOTAL_QUESTIONS) * 100) + '%';
 
   // Question text
   $('question-text').textContent = q.question;
@@ -299,11 +301,10 @@ function loadQuestion(idx) {
   // Options
   const container = $('options-container');
   container.innerHTML = '';
-  const letters = ['a', 'b', 'c', 'd'];
   q.options.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
-    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.innerHTML = `<span class="option-letter">${OPTION_LETTERS[i]}</span><span>${opt}</span>`;
     btn.addEventListener('click', () => selectAnswer(i));
     container.appendChild(btn);
   });
@@ -407,7 +408,7 @@ function showExplanation(type) {
 
 // ===== NEXT BUTTON =====
 $('next-btn').addEventListener('click', () => {
-  if (currentQ < 29) {
+  if (currentQ < TOTAL_QUESTIONS - 1) {
     loadQuestion(currentQ + 1);
   } else {
     endQuiz();
@@ -418,7 +419,7 @@ $('next-btn').addEventListener('click', () => {
 function updateNavGrid() {
   const grid = $('nav-grid');
   grid.innerHTML = '';
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < TOTAL_QUESTIONS; i++) {
     const btn = document.createElement('button');
     btn.className = 'nav-btn';
     btn.textContent = i + 1;
@@ -457,7 +458,7 @@ function renderResults() {
   });
 
   const totalTimeSec = Math.round((quizEndTime - quizStartTime) / 1000);
-  const pct = Math.round((correct / 30) * 100);
+  const pct = Math.round((correct / TOTAL_QUESTIONS) * 100);
 
   $('score-value').textContent = correct;
   $('stat-correct').textContent = correct;
@@ -469,7 +470,7 @@ function renderResults() {
   // Animate score ring (circumference = 2 * π * SCORE_RING_RADIUS ≈ 427.2)
   const scoreRing = $('score-ring');
   const scoreCircumference = 2 * Math.PI * SCORE_RING_RADIUS;
-  const scoreOffset = scoreCircumference * (1 - correct / 30);
+  const scoreOffset = scoreCircumference * (1 - correct / TOTAL_QUESTIONS);
   setTimeout(() => {
     scoreRing.style.strokeDashoffset = scoreOffset;
   }, 100);
@@ -546,7 +547,7 @@ $('review-prev').addEventListener('click', () => {
 });
 
 $('review-next').addEventListener('click', () => {
-  if (reviewIndex < 29) {
+  if (reviewIndex < TOTAL_QUESTIONS - 1) {
     reviewIndex++;
     renderReview(reviewIndex);
   }
@@ -556,7 +557,7 @@ function renderReview(idx) {
   const q = questions[idx];
   const userAnswer = answers[idx];
 
-  $('review-counter').textContent = `${idx + 1} / 30`;
+  $('review-counter').textContent = `${idx + 1} / ${TOTAL_QUESTIONS}`;
   const badge = $('review-topic-badge');
   badge.textContent = q.topic;
   badge.className = 'tag ' + q.tag_class;
@@ -565,12 +566,11 @@ function renderReview(idx) {
 
   const container = $('review-options-container');
   container.innerHTML = '';
-  const letters = ['a', 'b', 'c', 'd'];
   q.options.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
     btn.disabled = true;
-    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.innerHTML = `<span class="option-letter">${OPTION_LETTERS[i]}</span><span>${opt}</span>`;
     if (i === q.correct) btn.classList.add('correct');
     else if (userAnswer && !userAnswer.skipped && userAnswer.selected === i) btn.classList.add('wrong');
     container.appendChild(btn);
@@ -586,7 +586,7 @@ function renderReview(idx) {
 
   // Update prev/next button states
   $('review-prev').disabled = idx === 0;
-  $('review-next').disabled = idx === 29;
+  $('review-next').disabled = idx === TOTAL_QUESTIONS - 1;
 }
 
 // ===== RESTART =====
